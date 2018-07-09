@@ -32,7 +32,6 @@ defmodule ExRedis101 do
 #-------------------------------------------------
 
 
-
   def get(conn, key) do
 
       case Redix.command(conn, ["GET", key]) do
