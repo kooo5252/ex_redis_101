@@ -21,7 +21,6 @@ defmodule ExRedis101 do
 #-------------------------------------------------
 
 
-
   def set(conn, key, value) do
 
     Redix.command(conn, ["SET", key, value])
