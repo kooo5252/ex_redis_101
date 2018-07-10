@@ -1,35 +1,17 @@
 defmodule ExRedis101 do
-  @moduledoc """
-  Documentation for ExRedis101.
-  """
-
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> ExRedis101.hello
-      :world
-
-  """
-
-
-#test redis increment operation
-
-
-
+ 
+ 
 #-------------------------------------------------
 
 
-  def set(conn, key, value) do
+  def set(conn, key, val) do
 
-    Redix.command(conn, ["SET", key, value])
+    Redix.command(conn, ["SET", key, val])
 
   end
 
 
 #-------------------------------------------------
-
 
 
   def get(conn, key) do
@@ -39,20 +21,21 @@ defmodule ExRedis101 do
         {:ok, val} -> val
 
       end
-
   end
 
 
 #-------------------------------------------------
 
+
   defmodule AddWorker do
 
     def perform(key, val1, val2) do
 
-      {:ok, conn} = Redix.start_link()
+      case Redix.start_link() do
 
-      Redix.command(conn, ["SET", key, val1 + val2])
-
+        {:ok, conn} -> Redix.command(conn, ["SET", key, val1 + val2])
+        
+      end
     end
   end
 
@@ -63,6 +46,7 @@ defmodule ExRedis101 do
   defmodule User do
 
     def next_user_id(conn) do  
+
       case Redix.command(conn, ["INCR", "index"]) do
 
         {:ok, id} -> id
@@ -70,16 +54,18 @@ defmodule ExRedis101 do
       end
     end
 
+
 #-------------------------------------------------
 
+
     def get_username_by_user_id(conn, number) do
+
       case Redix.command(conn, ["HGET", "user:" <> Kernel.inspect(number), "username"]) do
 
         {:ok, name} -> name
 
       end
     end
-
   end
 
 
@@ -89,12 +75,12 @@ defmodule ExRedis101 do
   defmodule Ranking do
 
     def get_ranking(conn) do
+      
       case Redix.command(conn, ["ZREVRANGE", "ranking", 0, -1]) do
 
         {:ok, rank} -> rank
 
       end
-    
     end
   end
 
